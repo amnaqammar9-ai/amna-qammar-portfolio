@@ -115,10 +115,6 @@
 
   .note { margin-top: 20px; padding: 14px 18px; border-left: 4px solid var(--signal); background: var(--white); max-width: 70ch; }
   .note p { margin: 0; font-size: 1rem; color: var(--slate); }
-.gallery { display: grid; gap: 28px; margin-top: 20px; }
-.gallery figure { margin: 0; background: var(--white); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
-.gallery img { width: 100%; height: auto; }
-.gallery figcaption { padding: 12px 18px; color: var(--slate); font-size: 1rem; }
 
   .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 40px; margin: 22px 0 0; padding: 0; list-style: none; }
   .two-col li { padding: 14px 0; border-top: 1px solid var(--line); }
@@ -317,23 +313,17 @@
             <li>46.9% recorded vs scheduled cleans</li>
           </ul>
         </header>
-                <div class="gallery">
-          <figure>
-            <img src="projects/cleaning-ops-dashboard/screenshots/overview.png" alt="Cleaning operations dashboard overview">
-            <figcaption>Overview: budgeted vs cleaned hours and task activity</figcaption>
-          </figure>
-          <figure>
-            <img src="projects/cleaning-ops-dashboard/screenshots/cleaning-time.png" alt="Cleaning operations dashboard cleaning time">
-            <figcaption>Cleaning Time: budgeted vs recorded minutes by area</figcaption>
-          </figure>
-          <figure>
-            <img src="projects/cleaning-ops-dashboard/screenshots/task-status.png" alt="Cleaning operations dashboard task status">
-            <figcaption>Task Status: scheduled vs recorded area cleans</figcaption>
-          </figure>
-          <figure>
-            <img src="projects/cleaning-ops-dashboard/screenshots/hours-status.png" alt="Cleaning operations dashboard hours status">
-            <figcaption>Hours Status: budgeted vs cleaned hours by area</figcaption>
-          </figure>
+        <div class="viewer">
+          <div class="tabs" role="tablist" aria-label="Dashboard pages">
+            <button role="tab" id="ctab1" aria-selected="true" aria-controls="cleaning-shot" data-src="projects/cleaning-ops-dashboard/screenshots/overview.png" data-cap="Overview: budgeted vs cleaned hours, cleaning time by area, task activity and delivery progress.">Overview</button>
+            <button role="tab" id="ctab2" aria-selected="false" aria-controls="cleaning-shot" data-src="projects/cleaning-ops-dashboard/screenshots/cleaning-time.png" data-cap="Cleaning Time: budgeted vs recorded minutes by area, with area-level detail.">Cleaning Time</button>
+            <button role="tab" id="ctab3" aria-selected="false" aria-controls="cleaning-shot" data-src="projects/cleaning-ops-dashboard/screenshots/task-status.png" data-cap="Task Status: scheduled vs recorded area cleans and activity variance.">Task Status</button>
+            <button role="tab" id="ctab4" aria-selected="false" aria-controls="cleaning-shot" data-src="projects/cleaning-ops-dashboard/screenshots/hours-status.png" data-cap="Hours Status: budgeted vs cleaned hours by area and hours delivery.">Hours Status</button>
+          </div>
+          <div id="cleaning-shot" role="tabpanel" aria-labelledby="ctab1">
+            <img id="cleaning-shot-img" src="projects/cleaning-ops-dashboard/screenshots/overview.png" alt="Cleaning operations dashboard: overview" width="2000" height="1150">
+            <p id="cleaning-shot-cap">Overview: budgeted vs cleaned hours, cleaning time by area, task activity and delivery progress.</p>
+          </div>
         </div>
       </article>
 
@@ -432,25 +422,29 @@
 
 <script>
   (function () {
-    var tabs = document.querySelectorAll('.tabs [role="tab"]');
-    var img = document.getElementById('shot-img');
-    var cap = document.getElementById('shot-cap');
-    var panel = document.getElementById('shot');
-    function select(tab) {
-      tabs.forEach(function (t) { t.setAttribute('aria-selected', t === tab ? 'true' : 'false'); t.tabIndex = t === tab ? 0 : -1; });
-      img.src = tab.dataset.src;
-      img.alt = 'FreshMart dashboard: ' + tab.textContent;
-      cap.textContent = tab.dataset.cap;
-      panel.setAttribute('aria-labelledby', tab.id);
-    }
-    tabs.forEach(function (tab, i) {
-      tab.tabIndex = i === 0 ? 0 : -1;
-      tab.addEventListener('click', function () { select(tab); });
-      tab.addEventListener('keydown', function (e) {
-        var n = null;
-        if (e.key === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
-        if (e.key === 'ArrowLeft') n = tabs[(i - 1 + tabs.length) % tabs.length];
-        if (n) { e.preventDefault(); n.focus(); select(n); }
+    var viewers = document.querySelectorAll('.viewer');
+    viewers.forEach(function (viewer) {
+      var tabs = viewer.querySelectorAll('[role="tab"]');
+      var img = viewer.querySelector('img');
+      var cap = viewer.querySelector('p');
+      var panel = viewer.querySelector('[role="tabpanel"]');
+      var label = viewer.closest('article') ? viewer.closest('article').querySelector('h3').textContent : 'Dashboard';
+      function select(tab) {
+        tabs.forEach(function (t) { t.setAttribute('aria-selected', t === tab ? 'true' : 'false'); t.tabIndex = t === tab ? 0 : -1; });
+        img.src = tab.dataset.src;
+        img.alt = label + ': ' + tab.textContent;
+        cap.textContent = tab.dataset.cap;
+        if (panel) panel.setAttribute('aria-labelledby', tab.id);
+      }
+      tabs.forEach(function (tab, i) {
+        tab.tabIndex = i === 0 ? 0 : -1;
+        tab.addEventListener('click', function () { select(tab); });
+        tab.addEventListener('keydown', function (e) {
+          var n = null;
+          if (e.key === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
+          if (e.key === 'ArrowLeft') n = tabs[(i - 1 + tabs.length) % tabs.length];
+          if (n) { e.preventDefault(); n.focus(); select(n); }
+        });
       });
     });
   })();
