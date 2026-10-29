@@ -115,6 +115,10 @@
 
   .note { margin-top: 20px; padding: 14px 18px; border-left: 4px solid var(--signal); background: var(--white); max-width: 70ch; }
   .note p { margin: 0; font-size: 1rem; color: var(--slate); }
+.gallery { display: grid; gap: 28px; margin-top: 20px; }
+.gallery figure { margin: 0; background: var(--white); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.gallery img { width: 100%; height: auto; }
+.gallery figcaption { padding: 12px 18px; color: var(--slate); font-size: 1rem; }
 
   .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 40px; margin: 22px 0 0; padding: 0; list-style: none; }
   .two-col li { padding: 14px 0; border-top: 1px solid var(--line); }
@@ -313,8 +317,23 @@
             <li>46.9% recorded vs scheduled cleans</li>
           </ul>
         </header>
-        <div class="note">
-          <p>This dashboard uses real client data, so I don't show screenshots here. I can walk you through it on a call, or build a version with your own data.</p>
+                <div class="gallery">
+          <figure>
+            <img src="projects/cleaning-ops-dashboard/screenshots/overview.png" alt="Cleaning operations dashboard overview">
+            <figcaption>Overview: budgeted vs cleaned hours and task activity</figcaption>
+          </figure>
+          <figure>
+            <img src="projects/cleaning-ops-dashboard/screenshots/cleaning-time.png" alt="Cleaning operations dashboard cleaning time">
+            <figcaption>Cleaning Time: budgeted vs recorded minutes by area</figcaption>
+          </figure>
+          <figure>
+            <img src="projects/cleaning-ops-dashboard/screenshots/task-status.png" alt="Cleaning operations dashboard task status">
+            <figcaption>Task Status: scheduled vs recorded area cleans</figcaption>
+          </figure>
+          <figure>
+            <img src="projects/cleaning-ops-dashboard/screenshots/hours-status.png" alt="Cleaning operations dashboard hours status">
+            <figcaption>Hours Status: budgeted vs cleaned hours by area</figcaption>
+          </figure>
         </div>
       </article>
 

@@ -11,6 +11,13 @@ A four-page Power BI dashboard that turns monthly cleaning-management exports in
 | --- | --- | --- | --- |
 | 4 | 200+ | 85.7% | 46.9% |
 
+## Screenshots
+
+![Overview: budgeted vs cleaned hours and task activity](screenshots/overview.png)
+![Cleaning Time: budgeted vs recorded minutes by area](screenshots/cleaning-time.png)
+![Task Status: scheduled vs recorded area cleans](screenshots/task-status.png)
+![Hours Status: budgeted vs cleaned hours by area](screenshots/hours-status.png)
+
 ## What the dashboard shows
 
 - **Cleaning time:** budgeted vs cleaned hours by floor and area, with drill-down tables
@@ -28,4 +35,4 @@ A four-page Power BI dashboard that turns monthly cleaning-management exports in
 
 ## Note on client data
 
-This project uses real operational exports, so no screenshots, site names or raw data are published here. I can walk through the dashboard on a call, or build a sample version with anonymised data for your own project.
+This project uses real operational exports, so site names and raw data are not published here. The screenshots above show the four report pages. I can walk through the dashboard on a call, or build a sample version with anonymised data for your own project.
