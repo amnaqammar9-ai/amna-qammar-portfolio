@@ -1,0 +1,91 @@
+name: Show cleaning dashboard screenshots
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update index.html gallery and README screenshots
+        run: |
+          python3 << 'PYEOF'
+          import re
+
+          # ---------- index.html ----------
+          p = 'index.html'
+          s = open(p, encoding='utf-8').read()
+
+          css_anchor = '.note p { margin: 0; font-size: 1rem; color: var(--slate); }'
+          assert s.count(css_anchor) == 1, 'CSS anchor not found or not unique'
+          gallery_css = (
+              css_anchor
+              + '\n.gallery { display: grid; gap: 28px; margin-top: 20px; }'
+              + '\n.gallery figure { margin: 0; background: var(--white); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }'
+              + '\n.gallery img { width: 100%; height: auto; }'
+              + '\n.gallery figcaption { padding: 12px 18px; color: var(--slate); font-size: 1rem; }'
+          )
+          s = s.replace(css_anchor, gallery_css, 1)
+
+          shots = [
+              ('overview.png', 'Cleaning operations dashboard overview',
+               'Overview: budgeted vs cleaned hours and task activity'),
+              ('cleaning-time.png', 'Cleaning operations dashboard cleaning time',
+               'Cleaning Time: budgeted vs recorded minutes by area'),
+              ('task-status.png', 'Cleaning operations dashboard task status',
+               'Task Status: scheduled vs recorded area cleans'),
+              ('hours-status.png', 'Cleaning operations dashboard hours status',
+               'Hours Status: budgeted vs cleaned hours by area'),
+          ]
+          lines = ['        <div class="gallery">']
+          for fn, alt, cap in shots:
+              lines.append('          <figure>')
+              lines.append(f'            <img src="projects/cleaning-ops-dashboard/screenshots/{fn}" alt="{alt}">')
+              lines.append(f'            <figcaption>{cap}</figcaption>')
+              lines.append('          </figure>')
+          lines.append('        </div>')
+          gallery = '\n'.join(lines)
+
+          note_re = re.compile(
+              r'<div class="note">\s*<p>This dashboard uses real client data.*?</p>\s*</div>',
+              re.DOTALL,
+          )
+          found = note_re.findall(s)
+          assert len(found) == 1, f'note block matches: {len(found)}'
+          s = note_re.sub(lambda m: gallery, s, count=1)
+          open(p, 'w', encoding='utf-8').write(s)
+          print('index.html updated')
+
+          # ---------- projects/cleaning-ops-dashboard/README.md ----------
+          rp = 'projects/cleaning-ops-dashboard/README.md'
+          r = open(rp, encoding='utf-8').read()
+
+          table_row = '| 4 | 200+ | 85.7% | 46.9% |'
+          assert r.count(table_row) == 1, 'table anchor not found or not unique'
+          shots_md = '\n'.join(f'![{cap}](screenshots/{fn})' for fn, _, cap in shots)
+          r = r.replace(table_row, table_row + '\n\n## Screenshots\n\n' + shots_md, 1)
+
+          old_note = ('This project uses real operational exports, so no screenshots, site names or raw data '
+                      'are published here. I can walk through the dashboard on a call, or build a sample '
+                      'version with anonymised data for your own project.')
+          assert r.count(old_note) == 1, 'README note not found or not unique'
+          new_note = ('This project uses real operational exports, so site names and raw data are not published '
+                      'here. The screenshots above show the four report pages. I can walk through the dashboard '
+                      'on a call, or build a sample version with anonymised data for your own project.')
+          r = r.replace(old_note, new_note, 1)
+          open(rp, 'w', encoding='utf-8').write(r)
+          print('README.md updated')
+          PYEOF
+
+      - name: Commit and push
+        run: |
+          git config user.name "amnaqammar9-ai"
+          git config user.email "amnaqammar9-ai@users.noreply.github.com"
+          git add index.html projects/cleaning-ops-dashboard/README.md
+          git diff --cached --stat
+          git commit -m "Show cleaning operations dashboard screenshots" || echo "nothing to commit"
+          git push
