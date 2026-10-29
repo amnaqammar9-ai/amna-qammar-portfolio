@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amna Qammar | Data Analyst and Power BI Developer</title>
+<meta name="description" content="Amna Qammar builds Power BI dashboards, cleans messy data and writes clear analysis reports. Statistics graduate, available for freelance work on Fiverr.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F1F4F8;
+    --white: #FFFFFF;
+    --ink: #17263C;
+    --slate: #52627A;
+    --line: #CBD4E0;
+    --signal: #F2C811;      /* Power BI yellow */
+    --signal-deep: #8A6D00; /* readable yellow-brown for text on paper */
+    --fresh: #2F7D32;       /* FreshMart green */
+    --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+    --gutter: clamp(20px, 5vw, 64px);
+    --max: 1120px;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 2px; }
+  .wrap { width: min(100% - 2 * var(--gutter), var(--max)); margin-inline: auto; }
+
+  h1, h2, h3 { font-family: var(--display); line-height: 1.08; margin: 0; letter-spacing: -0.02em; }
+  h1 { font-size: clamp(2.5rem, 6.4vw, 4.75rem); font-weight: 800; }
+  h2 { font-size: clamp(1.9rem, 3.8vw, 2.75rem); font-weight: 700; }
+  h3 { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.01em; }
+  p { margin: 0 0 1em; max-width: 62ch; }
+
+  /* Top bar */
+  .bar { position: sticky; top: 0; z-index: 10; background: rgba(241,244,248,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  .bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; }
+  .brand { white-space: nowrap; font-family: var(--display); font-weight: 800; font-size: 1.15rem; text-decoration: none; letter-spacing: -0.01em; }
+  .bar nav { display: flex; gap: clamp(14px, 3vw, 30px); flex-wrap: wrap; justify-content: flex-end; }
+  .bar nav a { text-decoration: none; font-weight: 600; font-size: 1rem; padding: 6px 0; border-bottom: 2px solid transparent; }
+  .bar nav a:hover { border-bottom-color: var(--signal); }
+
+  /* Hero */
+  .hero { padding: clamp(40px, 8vw, 96px) 0 clamp(48px, 7vw, 88px); }
+  .hero .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+  .hero .lede { font-size: 1.3rem; color: var(--slate); margin-top: 24px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+  .btn { display: inline-block; text-decoration: none; font-weight: 700; padding: 13px 22px; border-radius: 4px; border: 2px solid var(--ink); }
+  .btn.primary { background: var(--ink); color: var(--white); }
+  .btn.primary:hover { background: var(--signal); color: var(--ink); border-color: var(--ink); }
+  .btn.plain:hover { background: var(--white); }
+
+  .chart { background: var(--white); border: 1px solid var(--line); border-radius: 6px; padding: 20px 20px 14px; }
+  .chart h2 { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; }
+  .chart svg { width: 100%; height: auto; margin-top: 8px; }
+  .chart figcaption { font-size: .95rem; color: var(--slate); margin-top: 6px; }
+  .grid-line { stroke: var(--line); stroke-width: 1; }
+  .axis-text { font: 600 12px var(--body); fill: var(--slate); }
+  .line { fill: none; stroke: var(--ink); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.8s .3s cubic-bezier(.5,0,.2,1) forwards; }
+  .dot { fill: var(--white); stroke: var(--ink); stroke-width: 3; opacity: 0; animation: pop .3s forwards; }
+  .dot.last { fill: var(--signal); }
+  .d1 { animation-delay: .5s; } .d2 { animation-delay: 1s; } .d3 { animation-delay: 1.5s; } .d4 { animation-delay: 2s; }
+  .value { font: 700 13px var(--body); fill: var(--ink); opacity: 0; animation: pop .3s 2.1s forwards; }
+  .callout { opacity: 0; animation: pop .4s 2.2s forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @keyframes pop { to { opacity: 1; } }
+
+  /* Sections */
+  section { padding: clamp(48px, 8vw, 96px) 0; border-top: 1px solid var(--line); }
+  .head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: clamp(20px, 5vw, 72px); }
+  .head > h2 { position: sticky; top: 84px; align-self: start; }
+
+  /* Services */
+  .services { margin: 0; padding: 0; list-style: none; }
+  .services li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: 8px 32px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+  .services li:first-child { padding-top: 0; }
+  .services h3 { margin: 0; }
+  .services p { margin: 0; color: var(--slate); }
+
+  /* Projects */
+  .project { margin-bottom: clamp(48px, 7vw, 80px); }
+  .project:last-child { margin-bottom: 0; }
+  .project > header { max-width: 62ch; margin-bottom: 20px; }
+  .project .tools { color: var(--slate); font-weight: 600; margin-top: 6px; }
+  .facts { display: flex; flex-wrap: wrap; gap: 8px 28px; margin: 18px 0 0; padding: 0; list-style: none; font-weight: 600; }
+  .facts li { padding-left: 14px; border-left: 4px solid var(--signal); }
+  .facts.green li { border-left-color: var(--fresh); }
+
+  .viewer { background: var(--white); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-top: 28px; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 0; border-bottom: 1px solid var(--line); background: #E7ECF3; }
+  .tabs button { font: 600 1rem var(--body); color: var(--ink); background: transparent; border: 0; border-right: 1px solid var(--line); padding: 12px 20px; cursor: pointer; }
+  .tabs button[aria-selected="true"] { background: var(--white); box-shadow: inset 0 -3px 0 var(--fresh); }
+  .tabs button:hover { background: #F4F7FB; }
+  .viewer img { width: 100%; height: auto; }
+  .viewer p { margin: 0; padding: 14px 20px; color: var(--slate); font-size: 1rem; max-width: none; border-top: 1px solid var(--line); }
+
+  .finds { margin: 28px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; max-width: 70ch; }
+  .finds li { padding-left: 22px; position: relative; }
+  .finds li::before { content: ""; position: absolute; left: 0; top: .62em; width: 10px; height: 10px; background: var(--fresh); border-radius: 50%; }
+  .link { font-weight: 700; text-decoration-thickness: 2px; text-underline-offset: 4px; text-decoration-color: var(--signal); }
+  .link:hover { text-decoration-color: var(--ink); }
+
+  .note { margin-top: 20px; padding: 14px 18px; border-left: 4px solid var(--signal); background: var(--white); max-width: 70ch; }
+  .note p { margin: 0; font-size: 1rem; color: var(--slate); }
+
+  .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 40px; margin: 22px 0 0; padding: 0; list-style: none; }
+  .two-col li { padding: 14px 0; border-top: 1px solid var(--line); }
+  .two-col strong { display: block; font-family: var(--display); font-size: 1.1rem; }
+  .two-col span { color: var(--slate); }
+
+  /* Skills */
+  .skills { margin: 0; display: grid; gap: 0; }
+  .skills div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 4px 24px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .skills div:first-child { padding-top: 0; }
+  .skills dt { font-family: var(--display); font-weight: 700; font-size: 1.1rem; }
+  .skills dd { margin: 0; color: var(--slate); }
+
+  /* Experience: a true sequence, so a timeline */
+  .timeline { margin: 0; padding: 0; list-style: none; border-left: 3px solid var(--ink); }
+  .timeline li { position: relative; padding: 0 0 36px 28px; }
+  .timeline li:last-child { padding-bottom: 0; }
+  .timeline li::before { content: ""; position: absolute; left: -11px; top: 7px; width: 19px; height: 19px; background: var(--paper); border: 3px solid var(--ink); border-radius: 50%; }
+  .timeline li.now::before { background: var(--signal); }
+  .timeline time { display: block; font-weight: 700; color: var(--signal-deep); }
+  .timeline h3 { margin: 2px 0 2px; }
+  .timeline .where { color: var(--slate); margin: 0 0 8px; }
+  .timeline ul { margin: 0; padding-left: 1.1em; max-width: 62ch; }
+  .timeline li li { padding: 0; margin-bottom: 4px; }
+  .timeline li li::before { display: none; }
+
+  .certs { margin: 0; padding: 0; list-style: none; }
+  .certs li { padding: 14px 0; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 4px 24px; }
+  .certs li:first-child { padding-top: 0; }
+  .certs span { color: var(--slate); }
+
+  /* Contact */
+  .contact { background: var(--ink); color: var(--white); border-top: 0; }
+  .contact h2 { max-width: 16ch; }
+  .contact p { color: #D5DCE8; margin-top: 18px; }
+  .contact .btn { border-color: var(--white); color: var(--white); }
+  .contact .btn.primary { background: var(--signal); color: var(--ink); border-color: var(--signal); }
+  .contact .btn.primary:hover { background: var(--white); border-color: var(--white); }
+  .contact .btn.plain:hover { background: rgba(255,255,255,.12); }
+  .contact :focus-visible { outline-color: var(--signal); }
+  footer { background: var(--ink); color: #AEB9CB; padding: 0 0 32px; font-size: .95rem; }
+  footer p { margin: 0; border-top: 1px solid rgba(255,255,255,.18); padding-top: 20px; max-width: none; }
+
+  @media (max-width: 860px) {
+    .hero .wrap, .head { grid-template-columns: 1fr; }
+    .head > h2 { position: static; }
+    .services li, .skills div, .certs li { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .line { animation: none; stroke-dashoffset: 0; }
+    .dot, .value, .callout { animation: none; opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top">Amna Qammar</a>
+    <nav aria-label="Main">
+      <a href="#services">Services</a>
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <h1>I turn raw exports into dashboards people can read.</h1>
+        <p class="lede">I'm a statistics graduate and Power BI developer. I clean messy data, build the model behind it and design reports that managers can use without a manual.</p>
+        <div class="actions">
+          <a class="btn primary" href="#contact">Hire me on Fiverr</a>
+          <a class="btn plain" href="#projects">See my projects</a>
+        </div>
+      </div>
+
+      <figure class="chart" style="margin:0">
+        <h2>Annual revenue, FreshMart</h2>
+        <svg viewBox="0 0 520 330" role="img" aria-label="Line chart of FreshMart annual revenue: $484K in 2014, $471K in 2015, $609K in 2016 and $733K in 2017.">
+          <g class="grid">
+            <line class="grid-line" x1="52" x2="500" y1="290" y2="290"/>
+            <line class="grid-line" x1="52" x2="500" y1="227.5" y2="227.5"/>
+            <line class="grid-line" x1="52" x2="500" y1="165" y2="165"/>
+            <line class="grid-line" x1="52" x2="500" y1="102.5" y2="102.5"/>
+            <line class="grid-line" x1="52" x2="500" y1="40" y2="40"/>
+          </g>
+          <text class="axis-text" x="44" y="294" text-anchor="end">0</text>
+          <text class="axis-text" x="44" y="231.5" text-anchor="end">$200K</text>
+          <text class="axis-text" x="44" y="169" text-anchor="end">$400K</text>
+          <text class="axis-text" x="44" y="106.5" text-anchor="end">$600K</text>
+          <text class="axis-text" x="44" y="44" text-anchor="end">$800K</text>
+          <text class="axis-text" x="90" y="316" text-anchor="middle">2014</text>
+          <text class="axis-text" x="215" y="316" text-anchor="middle">2015</text>
+          <text class="axis-text" x="340" y="316" text-anchor="middle">2016</text>
+          <text class="axis-text" x="465" y="316" text-anchor="middle">2017</text>
+
+          <path class="line" pathLength="1" d="M90 138.7 L215 143 L340 99.6 L465 60.9"/>
+          <circle class="dot d1" cx="90" cy="138.7" r="6.5"/>
+          <circle class="dot d2" cx="215" cy="143" r="6.5"/>
+          <circle class="dot d3" cx="340" cy="99.6" r="6.5"/>
+          <circle class="dot last d4" cx="465" cy="60.9" r="8"/>
+          <text class="value" x="90" y="122" text-anchor="middle">$484K</text>
+          <text class="value" x="215" y="127" text-anchor="middle">$471K</text>
+          <text class="value" x="340" y="83" text-anchor="middle">$609K</text>
+          <g class="callout">
+            <text class="value" x="465" y="36" text-anchor="middle" style="opacity:1">$733K</text>
+            <text class="axis-text" x="465" y="90" text-anchor="middle" style="fill:#17263C">+20.4% in 2017</text>
+          </g>
+        </svg>
+        <figcaption>Figures from my FreshMart sales dashboard (sample retail data, 2014 to 2017).</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <section id="services">
+    <div class="wrap head">
+      <h2>What I can do for you</h2>
+      <ul class="services">
+        <li>
+          <h3>Power BI dashboards</h3>
+          <p>A clean data model, DAX measures you can trust and report pages with filters, drill-down and clear layout.</p>
+        </li>
+        <li>
+          <h3>Data cleaning</h3>
+          <p>I combine, validate and reshape messy Excel or CSV exports in Power Query, Python or R, and note what was fixed.</p>
+        </li>
+        <li>
+          <h3>Analysis and reports</h3>
+          <p>Exploratory analysis, trends, correlations and regression, written up in plain language with recommendations.</p>
+        </li>
+        <li>
+          <h3>Python and machine learning</h3>
+          <p>Feature engineering, NLP and TensorFlow prototypes, and small Flask or Streamlit apps to demo them.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="wrap">
+      <div class="head" style="margin-bottom: clamp(32px, 5vw, 56px)">
+        <h2>Projects</h2>
+        <p style="color:var(--slate);margin:0">Two Power BI dashboards and a set of Python projects. Each one starts from raw data and ends with something a decision-maker can use.</p>
+      </div>
+
+      <article class="project" id="freshmart">
+        <header>
+          <h3>FreshMart Retail Solutions: sales performance dashboard</h3>
+          <p class="tools">Power BI, Power Query, DAX</p>
+          <p>A three-page dashboard for a retail chain, covering sales trends, product insights and customer segments. I cleaned the raw sales data in Power Query and wrote the DAX measures behind every KPI.</p>
+          <ul class="facts green">
+            <li>$2.30M revenue</li>
+            <li>$286.40K profit</li>
+            <li>5K orders</li>
+            <li>$458.61 average order</li>
+            <li>12.47% margin</li>
+          </ul>
+        </header>
+
+        <div class="viewer">
+          <div class="tabs" role="tablist" aria-label="Dashboard pages">
+            <button role="tab" id="tab1" aria-selected="true" aria-controls="shot" data-src="projects/freshmart-sales-dashboard/screenshots/page-1-sales-performance.png" data-cap="Page 1: revenue trend, category mix, top products, customer segments and regional profit.">Sales performance</button>
+            <button role="tab" id="tab2" aria-selected="false" aria-controls="shot" data-src="projects/freshmart-sales-dashboard/screenshots/page-2-product-insights.png" data-cap="Page 2: sub-category revenue and profit, margin by sub-category, top and bottom 10 products.">Product insights</button>
+            <button role="tab" id="tab3" aria-selected="false" aria-controls="shot" data-src="projects/freshmart-sales-dashboard/screenshots/page-3-customer-geography.png" data-cap="Page 3: customers, sales by state, regional share, top cities and purchase frequency.">Customers and geography</button>
+          </div>
+          <div id="shot" role="tabpanel" aria-labelledby="tab1">
+            <img id="shot-img" src="projects/freshmart-sales-dashboard/screenshots/page-1-sales-performance.png" alt="FreshMart sales performance dashboard, page 1" width="2000" height="1150">
+            <p id="shot-cap">Page 1: revenue trend, category mix, top products, customer segments and regional profit.</p>
+          </div>
+        </div>
+
+        <ul class="finds">
+          <li>Revenue grew from $484K in 2014 to $733K in 2017, with a 20.4% jump in the last year.</li>
+          <li>Technology and Office Supplies earn about 17% margin. Furniture earns only 2.5%, because Tables and Bookcases lose money.</li>
+          <li>Orders discounted 30% or more lose $97 on average, so I recommend capping discounts on those sub-categories.</li>
+        </ul>
+        <p style="margin-top:20px"><a class="link" href="projects/freshmart-sales-dashboard/FreshMart_Insights_Report.pdf">Read the full insights report (PDF)</a></p>
+      </article>
+
+      <article class="project" id="cleaning-ops">
+        <header>
+          <h3>Cleaning operations dashboard: facilities management</h3>
+          <p class="tools">Power BI, Power Query, DAX</p>
+          <p>A four-page dashboard that turns monthly cleaning exports into a clear view of cleaning time, task activity and hours delivered for a rail station site. I cleaned and combined 200+ exported locations, wrote the DAX for variance and delivery %, and added Month, Site and Region filters with area-level charts and drill-down tables. A data-quality note on every page keeps the numbers from being misread.</p>
+          <ul class="facts">
+            <li>4 report pages</li>
+            <li>200+ locations</li>
+            <li>85.7% cleaned vs budgeted hours</li>
+            <li>46.9% recorded vs scheduled cleans</li>
+          </ul>
+        </header>
+        <div class="viewer">
+          <div class="tabs" role="tablist" aria-label="Dashboard pages">
+            <button role="tab" id="ctab1" aria-selected="true" aria-controls="cleaning-shot" data-src="projects/cleaning-ops-dashboard/screenshots/overview.png" data-cap="Overview: budgeted vs cleaned hours, cleaning time by area, task activity and delivery progress.">Overview</button>
+            <button role="tab" id="ctab2" aria-selected="false" aria-controls="cleaning-shot" data-src="projects/cleaning-ops-dashboard/screenshots/cleaning-time.png" data-cap="Cleaning Time: budgeted vs recorded minutes by area, with area-level detail.">Cleaning Time</button>
+            <button role="tab" id="ctab3" aria-selected="false" aria-controls="cleaning-shot" data-src="projects/cleaning-ops-dashboard/screenshots/task-status.png" data-cap="Task Status: scheduled vs recorded area cleans and activity variance.">Task Status</button>
+            <button role="tab" id="ctab4" aria-selected="false" aria-controls="cleaning-shot" data-src="projects/cleaning-ops-dashboard/screenshots/hours-status.png" data-cap="Hours Status: budgeted vs cleaned hours by area and hours delivery.">Hours Status</button>
+          </div>
+          <div id="cleaning-shot" role="tabpanel" aria-labelledby="ctab1">
+            <img id="cleaning-shot-img" src="projects/cleaning-ops-dashboard/screenshots/overview.png" alt="Cleaning operations dashboard: overview" width="2000" height="1150">
+            <p id="cleaning-shot-cap">Overview: budgeted vs cleaned hours, cleaning time by area, task activity and delivery progress.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="project" id="python">
+        <header>
+          <h3>Python, machine learning and automation</h3>
+          <p class="tools">Python, TensorFlow, Pandas, NumPy, Flask, Streamlit</p>
+        </header>
+        <ul class="two-col">
+          <li><strong>Chatbot apps</strong><span>Text-to-speech and text-to-image features, served with Flask and Streamlit for real-time use.</span></li>
+          <li><strong>Feature engineering</strong><span>Missing values, outliers and scaling. Dimensionality reduction lifted accuracy by 15%.</span></li>
+          <li><strong>Automated EDA</strong><span>A reusable workflow for trends and correlations that cut typical analysis time by about 40%.</span></li>
+          <li><strong>Tweet prediction model</strong><span>An NLP model for tweet engagement, built with Python and TensorFlow, with 25% higher accuracy.</span></li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="wrap head">
+      <h2>Skills</h2>
+      <dl class="skills">
+        <div><dt>Languages</dt><dd>Python, R, SQL, MATLAB</dd></div>
+        <div><dt>BI and visualization</dt><dd>Power BI, DAX, Power Query, Excel</dd></div>
+        <div><dt>Machine learning and AI</dt><dd>TensorFlow, deep learning, neural networks, generative AI, NLP</dd></div>
+        <div><dt>App development</dt><dd>Django, Flask, Streamlit, NumPy, Pandas</dd></div>
+        <div><dt>Core practice</dt><dd>Data wrangling, EDA, feature engineering, LaTeX and Overleaf</dd></div>
+        <div><dt>Statistics</dt><dd>Regression, time series forecasting, multivariate analysis, hypothesis testing, sampling, ANOVA, quality control</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="wrap head">
+      <h2>Experience and education</h2>
+      <ol class="timeline">
+        <li class="now">
+          <time>April 2024 to now</time>
+          <h3>Junior Executive</h3>
+          <p class="where">National Database and Registration Authority (NADRA), Pakistan</p>
+          <ul>
+            <li>Clean and validate citizen-record data so it stays accurate.</li>
+            <li>Prepare statistical reports and demographic trend analysis for population studies.</li>
+            <li>Apply statistical quality control and handle sensitive databases securely.</li>
+            <li>Write management reports that support decisions.</li>
+          </ul>
+        </li>
+        <li class="now">
+          <time>Current</time>
+          <h3>Freelance data analyst</h3>
+          <p class="where">Fiverr</p>
+          <ul>
+            <li>Power BI dashboards, data cleaning, exploratory analysis and reporting for clients.</li>
+          </ul>
+        </li>
+        <li>
+          <time>January 2023 to January 2024</time>
+          <h3>Teacher</h3>
+          <p class="where">Hira Public High School, Faisalabad</p>
+        </li>
+        <li>
+          <time>2020 to 2024</time>
+          <h3>BS Statistics</h3>
+          <p class="where">University of Agriculture, Faisalabad, Pakistan</p>
+        </li>
+      </ol>
+    </div>
+
+    <div class="wrap head" style="margin-top: clamp(40px, 6vw, 72px)">
+      <h2>Certifications</h2>
+      <ul class="certs">
+        <li>AI with Python Certification <span>DigiSkills.pk</span></li>
+        <li>AI and Data Science Certification <span>Codanics</span></li>
+        <li>Statistical Modeling Using SPSS and R-Studio, 2-day workshop <span>July 2023</span></li>
+        <li>PISTAR Global Statistics Conference: Time Series Forecasting in R <span>January 2023</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <h2>Send me your data and your question.</h2>
+      <p>Tell me what you need to know and what the data looks like. I'll reply with how I'd approach it.</p>
+      <div class="actions">
+        <a class="btn primary" href="https://www.fiverr.com/YOUR-USERNAME">Message me on Fiverr</a>
+        <a class="btn plain" href="mailto:Amnaqammar75@gmail.com">Amnaqammar75@gmail.com</a>
+        <a class="btn plain" href="docs/Amna_Qammar_CV.pdf">Download my CV</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><p>Amna Qammar, Faisalabad, Pakistan.</p></div>
+</footer>
+
+<script>
+  (function () {
+    var viewers = document.querySelectorAll('.viewer');
+    viewers.forEach(function (viewer) {
+      var tabs = viewer.querySelectorAll('[role="tab"]');
+      var img = viewer.querySelector('img');
+      var cap = viewer.querySelector('p');
+      var panel = viewer.querySelector('[role="tabpanel"]');
+      var label = viewer.closest('article') ? viewer.closest('article').querySelector('h3').textContent : 'Dashboard';
+      function select(tab) {
+        tabs.forEach(function (t) { t.setAttribute('aria-selected', t === tab ? 'true' : 'false'); t.tabIndex = t === tab ? 0 : -1; });
+        img.src = tab.dataset.src;
+        img.alt = label + ': ' + tab.textContent;
+        cap.textContent = tab.dataset.cap;
+        if (panel) panel.setAttribute('aria-labelledby', tab.id);
+      }
+      tabs.forEach(function (tab, i) {
+        tab.tabIndex = i === 0 ? 0 : -1;
+        tab.addEventListener('click', function () { select(tab); });
+        tab.addEventListener('keydown', function (e) {
+          var n = null;
+          if (e.key === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
+          if (e.key === 'ArrowLeft') n = tabs[(i - 1 + tabs.length) % tabs.length];
+          if (n) { e.preventDefault(); n.focus(); select(n); }
+        });
+      });
+    });
+  })();
+</script>
+</body>
+</html>
