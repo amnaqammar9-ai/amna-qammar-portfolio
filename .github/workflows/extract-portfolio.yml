@@ -1,0 +1,41 @@
+name: Extract portfolio archive
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Extract portfolio zip
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq && sudo apt-get install -y -qq unzip
+          mkdir -p /tmp/portfolio_extract
+          unzip -q "amna-qammar-portfolio__1.zip" -d /tmp/portfolio_extract
+          entries=(/tmp/portfolio_extract/*)
+          if [ ${#entries[@]} -eq 1 ] && [ -d "${entries[0]}" ]; then
+            SRC="${entries[0]}"
+          else
+            SRC="/tmp/portfolio_extract"
+          fi
+          shopt -s dotglob
+          cp -r "$SRC"/* .
+          rm -f "amna-qammar-portfolio__1.zip"
+      - name: Commit extracted files
+        run: |
+          git config user.name "amnaqammar9-ai"
+          git config user.email "amnaqammar9-ai@users.noreply.github.com"
+          git add -A
+          git status --short
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+          else
+            git commit -m "Add portfolio site files"
+            git push
+          fi
